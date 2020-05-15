@@ -1,7 +1,9 @@
 from bs4 import BeautifulSoup
 import requests
 from splinter import Browser
+from splinter.exceptions import ElementDoesNotExist
 import pandas as pd
+
 
 
 def init_browser():
@@ -19,14 +21,13 @@ def scrape():
     browser.visit(url)
 
     #dictionary  to load the news content 
-    news = {}
 
     # parse html and navigate 
     html = browser.html
     soup = BeautifulSoup(html, 'html.parser')
 
     results = soup.find_all('li', class_="slide")
-    nl = '\n'
+    
 
     # Loop through returned results
     for result in results:    
@@ -41,14 +42,16 @@ def scrape():
             # add results only if title and paragraph text are available
             if (news_title and news_p):
 
-                 mars_data["News Title"] = news_title
-                 mars_data["Paragraph Text"] = news_p
+                 mars_data["Title"] = news_title
+                 mars_data["Paragraph"] = news_p
                 
                 
         except ElementDoesNotExist:
             print("Error!")
 
     browser.quit()
+
+    #--------------------------------------------------------------------------------------------------------
             
     
     # Visit JPL Mars Space Images - Featured Image
@@ -66,7 +69,7 @@ def scrape():
     browser.click_link_by_partial_text('1920 x 1200')
 
      # store it in the variable
-    featured_image_url = browser.url
+    featured_image_url = browser.windows[1].url
     # Add the featured image url to the dictionary
     mars_data["featured_image_url"] = featured_image_url
 
@@ -83,12 +86,15 @@ def scrape():
     soup = BeautifulSoup(html, 'html.parser')
 
     # Inspect the webpage to find element "article" encloses the tweets, fetch the first tweet out of it 
-    mars_weather = soup.body.find_all("article")[0].text
+    first_tweet = soup.body.find("div",class_="css-901oao r-jwli3a r-1qd0xha r-a023e6 r-16dba41 r-ad9z0x r-bcqeeo r-bnwqim r-qvutc0")
+    mars_weather = first_tweet.text
 
     # Add the weather to the dictionary
     mars_data["mars_weather"] = mars_weather
 
     browser.quit()
+
+  #--------------------------------------------------------------------------------------------------------
 
     # Visit the Mars Fact Page
     
@@ -96,15 +102,44 @@ def scrape():
     url = "https://space-facts.com/mars/"
     browser.visit(url)
 
-    # pass url string to the read_html method of Pandas
-    mars_facts_table = pd.read_html(url)
-    mars_facts_table
-    
-    # Add the Mars facts table to the dictionary
-    mars_data["mars_table"] = mars_facts_table
+    # Navigate through the parse tree to find table elements
+    html = browser.html
+    soup = BeautifulSoup(html,'html.parser')
+
+    results = soup.find_all("div", class_="widget widget_text profiles")
+
+        # declare lists to hold table columns
+    col_1 = []
+    col_2 = []
+
+    # loop through the results 
+    for result in results:
+        # Error handling
+        try:
+            td_item = result.find_all('td', class_='column-1')
+            tr_item = result.find_all('td', class_='column-2')
+            
+            if(td_item and tr_item):
+                for el in td_item:
+                    col_1.append(el.get_text())
+                for el in tr_item:
+                    col_2.append(el.get_text())
+            
+        except AttributeError as e:
+            print(e)
 
     browser.quit()
 
+    #load lists to a Dataframe and set column names
+    mars_facts_df= pd.DataFrame({'Description':col_1,'Value':col_2})
+
+    # convert to HTML table string using pandas to_html method
+    mars_facts_table = mars_facts_df.to_html()
+
+    # Add the Mars facts table to the dictionary
+    mars_data["mars_table"] = mars_facts_table
+
+    #---------------------------------------------------------------------------------------------------------
 
     # Visit the Mars Astrogeology Page
     browser = init_browser()
@@ -152,7 +187,7 @@ def scrape():
         x += 1
 
     # Add the hemisphere results to the mars data dictionary
-    mars_data['mars_astrogeology'] = hemisphere_image_urls
+    mars_data['mars_hemis'] = hemisphere_image_urls
 
     browser.quit()
 

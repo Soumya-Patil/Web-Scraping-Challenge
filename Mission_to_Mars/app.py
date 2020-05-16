@@ -16,10 +16,10 @@ conn = 'mongodb://localhost:27017'
 client = pymongo.MongoClient(conn)
 
 # Connect to a database. Will create one if not already available.
-db = client.team_db
+db = client.mars_db
 
 # Drops collection if available to remove duplicates
-db.team.drop()
+db.mars_db.drop()
 
 
 # Use PyMongo to establish Mongo connection

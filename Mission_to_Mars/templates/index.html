@@ -1,13 +1,134 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
   <title>Mission To Mars</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 </head>
 
-<body></body>
-</html>
+<body>
+  <div class="container">
+
+    <div class="jumbotron text-center">
+      <h1>Mission To Mars</h1>
+      <p><a class="btn btn-primary btn-lg" href="/scrape" role="button">Scrape New Data</a></p>
+    </div>
+
+    <!--Latest News Division-->
+    <div class="row" id="news">
+      <div class="col-md-12">
+        <h4 class="heading">{{mars_record.Title}} </h4>
+        <small>{{mars_record.Paragraph}}</small>
+      </div>
+    </div>
+    <br>
+
+    <div class="row" id="images">
+      <div class="col">
+        <h4 class="heading">{{mars_record.featured_image_title}}</h4>
+        <figure class="figure">
+          <img src='{{mars_record.featured_image_url}}' class="figure-img img-fluid rounded" alt="Responsive image">
+          <figcaption class="figure-caption">Current Featured Image</figcaption>
+        </figure>
+      </div>
+      <div class="col">
+        <div class="row" id="images">
+          <h4 class="heading">Current Weather on Mars</h4>
+          <div class="card">
+            <div class="card-body">
+              {{mars_record.mars_weather}}
+            </div>
+          </div>
+        </div>
+    
+        <div class="row" id="table">
+
+          <table class="table table-striped">
+            <thead>
+
+              <tr>
+                <th scope="col">Description</th>
+                <th scope="col">Value</th>
+              </tr>
+
+            </thead>
+            <tbody>
+              {% for m in range(9) %}
+              <tr>
+              <td scope="row">{{mars_record.Description[m]}}</td>
+               <td scope="row">{{mars_record.Value[m]}}</td>
+              </tr>
+              {% endfor %}
+              
+                </tbody>
+          </table>
+
+         </div>
+        </div>
+      </div>
+
+      <div class="row" id="images-descriptions">
+        <div class="col">
+          <div class="card" style="width: 18rem;">
+            <img src="{{mars_record.featured_image_url[0]}}" class="card-img-top" alt="mars image">
+            <div class="card-body">
+              <p class="card-text">{{mars_record.featured_image_title[0]}}</p>
+            </div>
+          </div>
+        </div>
+  
+        <div class="col">
+          <div class="card" style="width: 18rem;">
+            <img src="{{mars_record.featured_image_url[1]}}" class="card-img-top" alt="mars image">
+            <div class="card-body">
+              <p class="card-text">{{mars_record.featured_image_title[1]}}</p>
+            </div>
+          </div>
+        </div>
+  
+      </div>
+  
+      <div class="row" id="images-descriptions">
+        <div class="col">
+          <div class="card" style="width: 18rem;">
+            <img src="{{mars_record.featured_image_url[2]}}" class="card-img-top" alt="mars image">
+            <div class="card-body">
+              <p class="card-text">{{mars_record.featured_image_title[2]}}</p>
+            </div>
+          </div>
+        </div>
+  
+        <div class="col">
+          <div class="card" style="width: 18rem;">
+            <img src="{{mars_record.featured_image_url[3]}}" class="card-img-top" alt="mars image">
+            <div class="card-body">
+              <p class="card-text">{{mars_record.featured_image_title[3]}}</p>
+            </div>
+          </div>
+        </div>
+  
+      </div>
+  
+    </div>
+   
+  <!-- Optional JavaScript -->
+  
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+</body>
+
+</html> 

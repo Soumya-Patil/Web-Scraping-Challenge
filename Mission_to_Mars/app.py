@@ -31,10 +31,10 @@ mongo = PyMongo(app, uri="mongodb://localhost:27017/mars_db")
 def home():
 
     # Find one record of data from the mongo database
-    mars_info = mongo.db.collection.find_one()
+    mars_record = mongo.db.collection.find_one()
 
     # Return template and data
-    return render_template("index.html", mars_record = mars_info)
+    return render_template("index.html", mars_record = mars_record)
 
 
 

@@ -105,35 +105,14 @@ def scrape():
     soup = BeautifulSoup(html, 'html.parser')
 
     # Inspect the webpage to fetch the first tweet out of it 
-    #latest_tweet = soup.body.find("div",class_="css-901oao r-jwli3a r-1qd0xha r-a023e6 r-16dba41 r-ad9z0x r-bcqeeo r-bnwqim r-qvutc0").text
+    mars_weather = results = soup.article.find_all("span")[7].text
    
-    #mars_weather = latest_tweet.span.text
 
     # Add the weather to the dictionary
-    #mars_data["mars_weather"] = latest_tweet
+    mars_data["mars_weather"] = mars_weather
 
-    results = soup.find_all('div', class_="stream-container")
-
-    #     Loop through returned results
-    for result in results:
-        # Error handling
-        try:
-            # Identify and return news title
-            mars_weather = result.find(
-                'p', class_="TweetTextSize TweetTextSize--normal js-tweet-text tweet-text").text
-   
-
-            # Print results only if title, price, and link are available
-            if (mars_weather):
-                mars_data["Mars_Weather"] = mars_weather
-
-        except AttributeError as e:
-            print(e)
     browser.quit()
-       
-
     
-
     #--------------------------------------------------------------------------------------------------------
 
     # Visit the Mars Fact Page

@@ -48,6 +48,7 @@ def scrape():
             
             
     except ElementDoesNotExist:
+
         print("Error!")
 
     browser.quit()
@@ -97,20 +98,41 @@ def scrape():
     browser = init_browser()
     url = "https://twitter.com/marswxreport?lang=en"
     browser.visit(url)
-    time.sleep(3)
+    time.sleep(5)
 
     # parse the html and navigate through the tree
     html = browser.html
     soup = BeautifulSoup(html, 'html.parser')
 
     # Inspect the webpage to fetch the first tweet out of it 
-    latest_tweet = soup.body.find("div",class_="css-901oao r-jwli3a r-1qd0xha r-a023e6 r-16dba41 r-ad9z0x r-bcqeeo r-bnwqim r-qvutc0")
-    mars_weather = latest_tweet.span.text
+    #latest_tweet = soup.body.find("div",class_="css-901oao r-jwli3a r-1qd0xha r-a023e6 r-16dba41 r-ad9z0x r-bcqeeo r-bnwqim r-qvutc0").text
+   
+    #mars_weather = latest_tweet.span.text
 
     # Add the weather to the dictionary
-    mars_data["mars_weather"] = mars_weather
+    #mars_data["mars_weather"] = latest_tweet
 
+    results = soup.find_all('div', class_="stream-container")
+
+    #     Loop through returned results
+    for result in results:
+        # Error handling
+        try:
+            # Identify and return news title
+            mars_weather = result.find(
+                'p', class_="TweetTextSize TweetTextSize--normal js-tweet-text tweet-text").text
+   
+
+            # Print results only if title, price, and link are available
+            if (mars_weather):
+                mars_data["Mars_Weather"] = mars_weather
+
+        except AttributeError as e:
+            print(e)
     browser.quit()
+       
+
+    
 
     #--------------------------------------------------------------------------------------------------------
 
@@ -150,23 +172,18 @@ def scrape():
         except AttributeError as e:
 
             print(e)
+    
+    mars_facts = {'Description':[],'Value':[]}
+     
+
+    for i in range(len(col_2)):
+         mars_facts['Description'].append(col_1[i])
+         mars_facts['Value'].append(col_2[i])
+
+    mars_data['mars_facts_table'] = mars_facts
+         
 
     browser.quit()
-
-    #load lists to a Dataframe and set column names
-    mars_facts_df = pd.DataFrame({'Description':col_1,'Value':col_2})
-    
-
-    # convert to HTML table string using pandas to_html method
-    mars_facts_table = mars_facts_df.to_html()
-
-    mars_data['mars_facts_table'] = mars_facts_table
-    
-    browser.quit()
-    
-
-    
-    
     
     #---------------------------------------------------------------------------------------------------------
 
@@ -177,33 +194,50 @@ def scrape():
     url = "https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars"
 
     browser.visit(url)
-    time.sleep(3)
+    time.sleep(5)
 
     html = browser.html
     soup = BeautifulSoup(html, 'html.parser')
 
-        # navigate through the parse tree to find the hemisphere header texts
-    click_text= []
+    # navigate through the parse tree to find the hemisphere header texts
+
+    links = []
+
     for x in range(4):
+
         text = soup.find_all('h3')[x].text
-        click_text.append(text)
+        links.append(text)
         x += 1
 
     # click on the links with the header texts and store img url and title as key-value pairs and append it to a list 
 
     hemisphere_image_urls = []
 
-    for x in range(4):
-        browser.find_link_by_partial_text(click_text[x]).first.click()
+    x = 0
+
+
+    # loop to click on the available links 
+
+    for link in links:
         
-        title = browser.find_by_tag('h2.title').text
+        
+        browser.links.find_by_partial_text(links[x]).click()
+        time.sleep(3)
+        
+        # store the titles of the links 
+        title = browser.find_by_tag('h2').text
+        
         browser.click_link_by_text('Sample') #Sample is a clickable link to the full-size image
+        time.sleep(3)
         
-        image_url = browser.windows[1].url   # copy image url 
+        
+        image_url = browser.windows[1].url        # copy image url
+        
         hemisphere_image_urls.append({"Title": title, "Img_URL": image_url})
         
         # designate current Image window as a window & close
-        window = browser.windows[1] 
+        window = browser.windows[1]
+        
         window.close()  
         
         # switch to the main window 
@@ -211,9 +245,14 @@ def scrape():
         
         # go back to the previous page 
         browser.back()
+        time.sleep(2)
         
-        #increment for next clickable header text
+        # increment for looping
         x += 1
+        
+
+    #exit browser instance
+    browser.quit()
 
     mars_data["hemisphere_info"] = hemisphere_image_urls
 

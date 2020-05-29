@@ -37,8 +37,7 @@ def home():
     return render_template("index.html", mars_record = mars_record)
 
 
-
-
+# scrape function routing to python script scrape_mars.py , returns mars_data dictionary with all the scraped data from all four websites
 @app.route("/scrape")
 def scrape():
 

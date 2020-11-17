@@ -7,3 +7,11 @@
 - Pymongo for CRUD applications for the database. 
 - Used Bootstrap to structure your HTML template.
 
+##### Sources used :
+
+https://github.com/wention/BeautifulSoup4
+https://splinter.readthedocs.io/en/latest/
+https://pymongo.readthedocs.io/en/stable/
+https://docs.mongodb.com/manual/core/document/
+https://getbootstrap.com/docs/4.1/getting-started/introduction/
+
